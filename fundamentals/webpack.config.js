@@ -30,9 +30,9 @@ module.exports = {
                 use: 'babel-loader', //a integração do babel e o webpack
             },
             {
-                test: /\.css$/,
+                test: /\.scss$/,
                 exclude: /node_modules/,
-                use: [ 'style-loader', 'css-loader' ], 
+                use: [ 'style-loader', 'css-loader', 'sass-loader' ], 
             }
         ]
     }
