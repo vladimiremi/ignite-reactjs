@@ -1,5 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
@@ -15,19 +16,28 @@ module.exports = {
         extensions: ['.js', '.jsx'],
     },
     devServer: {
-        contentBase: path.resolve(__dirname, 'public', 'index.html')
+        contentBase: path.resolve(__dirname, 'public', 'index.html'),
+        hot: true,
     },
-    plugins: [
+    plugins: [ //não aceita valor falso
+        isDevelopment && new ReactRefreshWebpackPlugin, //pode dar falso
         new HtmlWebpackPlugin({
-            template: path.resolve(__dirname, 'public', 'index.html')
-        })
-    ],
+            template: path.resolve(__dirname, 'public', 'index.html'),
+        }),
+    ].filter(Boolean),//resolve o problema do thuthy, retira todos os falses de dentro
     module: {
         rules: [
             {
                 test: /\.jsx$/,
                 exclude: /node_modules/,
-                use: 'babel-loader', //a integração do babel e o webpack
+                use: {
+                    loader: 'babel-loader',//a integração do babel e o webpack
+                    options: {
+                        plugins: [
+                            isDevelopment && require.resolve('react-refresh/babel')
+                        ].filter(Boolean)
+                    }
+                } 
             },
             {
                 test: /\.scss$/,
